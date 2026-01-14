@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { countries, formatPhoneNumber } from '~/utils/countries'
+import { countries } from '~/utils/countries'
 
 const props = defineProps<{
   modelValue: string
@@ -44,8 +44,8 @@ const handleInput = (e: Event) => {
           class="min-w-[120px] justify-between py-[2px]"
         >
           <span class="flex items-center gap-2">
-            <span class="text-lg">{{ selectedCountry?.code === 'UA' ? '🇺🇦' : selectedCountry?.code === 'PL' ? '🇵🇱' : selectedCountry?.code === 'US' ? '🇺🇸' : selectedCountry?.code === 'GB' ? '🇬🇧' : '🇩🇪' }}</span>
-            <span class="text-sm">{{ selectedCountry?.dialCode }}</span>
+            <span class="text-lg">{{ selectedCountry.flag }}</span>
+            <span class="text-sm">{{ selectedCountry.dialCode }}</span>
           </span>
           <UIcon
             name="i-heroicons-chevron-down-20-solid"
@@ -61,7 +61,7 @@ const handleInput = (e: Event) => {
               class="w-full px-3 py-2 text-left hover:bg-gray-100 rounded-lg flex items-center gap-3 transition-colors"
               @click="setCountry(country); isDropdownOpen = false"
             >
-              <span class="text-lg">{{ country.code === 'UA' ? '🇺🇦' : country.code === 'PL' ? '🇵🇱' : country.code === 'US' ? '🇺🇸' : country.code === 'GB' ? '🇬🇧' : '🇩🇪' }}</span>
+              <span class="text-lg">{{ country.flag }}</span>
               <div class="flex-1">
                 <div class="text-sm font-medium">
                   {{ country.name }}
@@ -78,7 +78,7 @@ const handleInput = (e: Event) => {
       <div class="flex-1">
         <UInput
           :model-value="formattedPhone"
-          :placeholder="selectedCountry?.mask.replace(/#/g, '0')"
+          :placeholder="selectedCountry.mask.replace(/#/g, '0')"
           class="w-full"
           @input="handleInput"
         />

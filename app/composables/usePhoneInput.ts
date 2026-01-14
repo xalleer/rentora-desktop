@@ -1,6 +1,9 @@
+import { countries, formatPhoneNumber } from '~/utils/countries'
+
 export const usePhoneInput = () => {
   const selectedCountry = ref(countries[0])
   const phoneNumber = ref('')
+
   const fullPhoneNumber = computed(() => {
     const cleaned = phoneNumber.value.replace(/\D/g, '')
     return cleaned ? `${selectedCountry?.value?.dialCode}${cleaned}` : ''

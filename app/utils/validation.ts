@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import * as z from 'zod'
 
 export const loginSchema = z.object({
   email: z
@@ -29,8 +29,8 @@ export const signupSchema = z.object({
     .regex(/[A-Z]/, 'Пароль має містити хоча б одну велику літеру')
     .regex(/[a-z]/, 'Пароль має містити хоча б одну малу літеру')
     .regex(/[0-9]/, 'Пароль має містити хоча б одну цифру'),
-  role: z.enum(['landlord', 'tenant'], {
-    errorMap: () => ({ message: 'Оберіть роль' })
+  role: z.enum(['landlord', 'tenant']).refine(val => val, {
+    message: 'Оберіть роль'
   })
 })
 

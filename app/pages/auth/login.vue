@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { z } from 'zod'
 import { loginSchema, type LoginForm } from '~/utils/validation'
+import GoogleButton from '~/components/auth/GoogleButton.vue'
 
 const form = ref<LoginForm>({
   email: '',
@@ -7,38 +9,26 @@ const form = ref<LoginForm>({
 })
 
 const errors = ref<Partial<Record<keyof LoginForm, string>>>({})
-const isLoading = ref(false)
+const authStore = useAuthStore()
 
 const handleLogin = async () => {
   try {
     errors.value = {}
     const validated = loginSchema.parse(form.value)
-
-    isLoading.value = true
-    console.log('Logging in with:', validated)
-
-    // Тут буде ваш API запит
-    // await $fetch('/api/auth/login', { method: 'POST', body: validated })
-
-    await new Promise(resolve => setTimeout(resolve, 1000))
-
-    // navigateTo('/dashboard')
+    await callOnce('auth', () => authStore.login(validated))
   } catch (error) {
     if (error instanceof z.ZodError) {
-      error.errors.forEach((err) => {
+      error.issues.forEach((err) => {
         if (err.path[0]) {
           errors.value[err.path[0] as keyof LoginForm] = err.message
         }
       })
     }
-  } finally {
-    isLoading.value = false
   }
 }
 
 const handleGoogleLogin = () => {
   console.log('Google login')
-  // Тут буде OAuth логіка
 }
 </script>
 
@@ -106,35 +96,15 @@ const handleGoogleLogin = () => {
         type="submit"
         block
         size="lg"
-        :loading="isLoading"
+        :loading="false"
         class="bg-[#415234] hover:bg-[#2F3D26] text-white transition-colors duration-200"
       >
         Увійти
       </UButton>
 
-      <div class="relative py-2">
-        <div class="absolute inset-0 flex items-center">
-          <span class="w-full border-t border-gray-200" />
-        </div>
-        <div class="relative flex justify-center text-xs uppercase">
-          <span class="bg-white px-2 text-gray-500">Або</span>
-        </div>
-      </div>
-
-      <UButton
-        type="button"
-        color="white"
-        variant="solid"
-        block
-        class="border border-gray-200 shadow-none hover:bg-gray-50"
-        @click="handleGoogleLogin"
-      >
-        <UIcon
-          name="i-logos-google-icon"
-          class="w-5 h-5 mr-2"
-        />
-        <span class="text-gray-700 text-sm">Увійти через Google</span>
-      </UButton>
+      <GoogleButton @click="handleGoogleLogin">
+        Увійти через Google
+      </GoogleButton>
 
       <p class="text-center text-sm text-gray-600 mt-6">
         Не маєте акаунт?

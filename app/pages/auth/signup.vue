@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import * as z from 'zod'
 import { signupSchema, type SignupForm } from '~/utils/validation'
 import PhoneInput from '~/components/ui/PhoneInput.vue'
+import GoogleButton from '~/components/auth/GoogleButton.vue'
 
 const form = ref<SignupForm & { fullPhone: string }>({
   name: '',
@@ -15,14 +17,13 @@ const errors = ref<Partial<Record<keyof SignupForm, string>>>({})
 const isLoading = ref(false)
 
 const roleOptions = [
-  { value: 'tenant', label: 'Знімаю квартиру', icon: 'i-heroicons-key' },
-  { value: 'landlord', label: 'Здаю квартиру', icon: 'i-heroicons-home' }
+  { value: 'tenant' as const, label: 'Знімаю квартиру', icon: 'i-heroicons-key' },
+  { value: 'landlord' as const, label: 'Здаю квартиру', icon: 'i-heroicons-home' }
 ]
 
 const handleSignup = async () => {
   try {
     errors.value = {}
-
     const dataToValidate = {
       name: form.value.name,
       email: form.value.email,
@@ -32,19 +33,12 @@ const handleSignup = async () => {
     }
 
     const validated = signupSchema.parse(dataToValidate)
-
     isLoading.value = true
     console.log('Signing up with:', validated)
-
-    // Тут буде ваш API запит
-    // await $fetch('/api/auth/signup', { method: 'POST', body: validated })
-
     await new Promise(resolve => setTimeout(resolve, 1000))
-
-    // navigateTo('/login')
   } catch (error) {
     if (error instanceof z.ZodError) {
-      error.errors.forEach((err) => {
+      error.issues.forEach((err) => {
         if (err.path[0]) {
           errors.value[err.path[0] as keyof SignupForm] = err.message
         }
@@ -183,29 +177,9 @@ const handleGoogleSignup = () => {
         Зареєструватися
       </UButton>
 
-      <div class="relative py-2">
-        <div class="absolute inset-0 flex items-center">
-          <span class="w-full border-t border-gray-200" />
-        </div>
-        <div class="relative flex justify-center text-xs uppercase">
-          <span class="bg-white px-2 text-gray-500">Або</span>
-        </div>
-      </div>
-
-      <UButton
-        type="button"
-        color="white"
-        variant="solid"
-        block
-        class="border border-gray-200 shadow-none hover:bg-gray-50"
-        @click="handleGoogleSignup"
-      >
-        <UIcon
-          name="i-logos-google-icon"
-          class="w-5 h-5 mr-2"
-        />
-        <span class="text-gray-700 text-sm">Зареєструватися через Google</span>
-      </UButton>
+      <GoogleButton @click="handleGoogleSignup">
+        Зареєструватися через Google
+      </GoogleButton>
 
       <p class="text-center text-sm text-gray-600 mt-6">
         Вже маєте акаунт?
