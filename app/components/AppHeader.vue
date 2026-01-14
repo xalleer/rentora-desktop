@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
 
-const isLogined = ref(true)
+const isLogined = ref(false)
+const router = useRouter()
 
 const items: NavigationMenuItem[] = [
   {
@@ -36,17 +37,11 @@ const items: NavigationMenuItem[] = [
           :items="items"
         />
       </template>
-
-      <template v-else>
-        <UButton variant="link">
-          Увійти
-        </UButton>
-        <UButton>Зареєструватись</UButton>
-      </template>
     </template>
 
     <template #right>
       <UUser
+        v-if="isLogined"
         class="cursor-pointer"
         name="John Doe"
         description="Software Engineer"
@@ -55,7 +50,16 @@ const items: NavigationMenuItem[] = [
           icon: 'i-lucide-image'
         }"
       />
-      <UColorModeButton />
+      <!--      <UColorModeButton /> -->
+      <template v-if="!isLogined">
+        <UButton
+          variant="outline"
+          @click="router.push('/auth/login')"
+        >
+          Увійти
+        </UButton>
+        <UButton>Зареєструватись</UButton>
+      </template>
     </template>
   </UHeader>
 </template>
