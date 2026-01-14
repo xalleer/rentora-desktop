@@ -15,7 +15,7 @@ const handleLogin = async () => {
   try {
     errors.value = {}
     const validated = loginSchema.parse(form.value)
-    await callOnce('auth', () => authStore.login(validated))
+    await authStore.login(validated)
   } catch (error) {
     if (error instanceof z.ZodError) {
       error.issues.forEach((err) => {

@@ -1,5 +1,15 @@
+import type { AxiosInstance } from 'axios'
+
 declare module '#app' {
   interface NuxtApp {
-    $api: ReturnType<typeof import('axios').default.create>
+    $api: AxiosInstance
   }
 }
+
+declare module 'vue' {
+  interface ComponentCustomProperties {
+    $api: AxiosInstance
+  }
+}
+
+export {}
