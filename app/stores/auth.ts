@@ -1,10 +1,8 @@
 import { defineStore } from 'pinia'
-import type { IUser } from '~/types/user'
 import type { ILoginPayload } from '~/types/auth'
 import { useAuthApi } from '~/services/auth'
 
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref<IUser | null>(null)
   const loading = ref<boolean>(false)
 
   const api = useAuthApi()
@@ -16,9 +14,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
     try {
       const response = await api.login(payload)
-
-      tokenCookie.value = response.data.token
-      user.value = response.data.user
+      tokenCookie.value = response.data.access_token
     } catch (error: unknown) {
       console.error(error)
       throw error
@@ -28,7 +24,6 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   return {
-    user,
     loading,
     isAuth,
     login

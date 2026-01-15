@@ -8,7 +8,10 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   routeRules: {
-    '/': { prerender: true }
+    '/': { prerender: true },
+    '/api/server/**': {
+      proxy: 'https://dev.rentora.site/**'
+    }
   },
 
   compatibilityDate: '2025-01-15',

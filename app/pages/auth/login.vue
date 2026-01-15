@@ -10,12 +10,17 @@ const form = ref<LoginForm>({
 
 const errors = ref<Partial<Record<keyof LoginForm, string>>>({})
 const authStore = useAuthStore()
+const userStore = useUserStore()
+const router = useRouter()
 
 const handleLogin = async () => {
   try {
     errors.value = {}
     const validated = loginSchema.parse(form.value)
     await authStore.login(validated)
+    resetForm()
+    router.push('/')
+    await userStore.getMe()
   } catch (error) {
     if (error instanceof z.ZodError) {
       error.issues.forEach((err) => {
@@ -25,6 +30,11 @@ const handleLogin = async () => {
       })
     }
   }
+}
+
+const resetForm = () => {
+  form.value.email = ''
+  form.value.password = ''
 }
 
 const handleGoogleLogin = () => {

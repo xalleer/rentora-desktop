@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
 
-const isLogined = ref(false)
+const authStore = useAuthStore()
+const userStore = useUserStore()
 const router = useRouter()
 
 const items: NavigationMenuItem[] = [
@@ -32,7 +33,7 @@ const items: NavigationMenuItem[] = [
     </template>
 
     <template #default>
-      <template v-if="isLogined">
+      <template v-if="authStore.isAuth">
         <UNavigationMenu
           :items="items"
         />
@@ -41,17 +42,18 @@ const items: NavigationMenuItem[] = [
 
     <template #right>
       <UUser
-        v-if="isLogined"
+        v-if="authStore.isAuth"
         class="cursor-pointer"
-        name="John Doe"
-        description="Software Engineer"
+        :name="userStore.user?.displayName"
+        description="Профіль"
         :avatar="{
           src: 'https://i.pravatar.cc/150?u=john-doe',
           icon: 'i-lucide-image'
         }"
+        @click="router.push('/profile')"
       />
       <!--      <UColorModeButton /> -->
-      <template v-if="!isLogined">
+      <template v-if="!authStore.isAuth">
         <UButton
           variant="outline"
           @click="router.push('/auth/login')"

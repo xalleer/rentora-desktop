@@ -4,8 +4,7 @@ export default defineNuxtPlugin(() => {
   const token = useCookie('token')
 
   const api = axios.create({
-    baseURL: 'https://dev.rentora.site',
-    withCredentials: true,
+    baseURL: '/api/server',
     timeout: 15000,
     headers: {
       'Content-Type': 'application/json',
@@ -21,7 +20,7 @@ export default defineNuxtPlugin(() => {
   })
 
   api.interceptors.response.use(
-    response => response.data,
+    response => response,
     (error) => {
       if (error.response?.status === 401) {
         console.warn('Unauthorized')
